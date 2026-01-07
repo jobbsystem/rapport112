@@ -332,6 +332,8 @@ export function reportTemplate(data) {
       box-shadow: 0 10px 30px rgba(0,0,0,0.1);
     }
     .device-mockup img { display: block; width: 100%; height: auto; }
+    .device-mockup.mobile { max-width: 360px; margin: 0 auto; }
+    .device-mockup.mobile img { width: 100%; height: auto; display: block; }
 
     /* Specific Cards Styling */
     .card-highlight {
@@ -606,7 +608,7 @@ export function reportTemplate(data) {
       <div class="card-header">
         <h2>Mobil vy</h2>
       </div>
-      <div class="device-mockup">
+      <div class="device-mockup mobile">
         ${
           screenshotMobileFile
             ? `<img src="${escapeHtml(screenshotMobileFile)}" alt="Mobil">`
