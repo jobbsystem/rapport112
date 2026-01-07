@@ -30,6 +30,19 @@ POST `/api/run-report`
 Body: `{ "url": "https://site.com", "email": "valfritt", "phone": "valfritt" }`
 Svar: `{ "ok": true, "htmlPath": "output/report-*.html", "pdfPath": "output/report-*.pdf" }`
 
+## E-post (valfritt)
+Servern skickar e-post om env-variabler finns och `email` anges i payload:
+```
+MAIL_HOST=...
+MAIL_PORT=587
+MAIL_SECURE=false   # true för 465
+MAIL_USER=...
+MAIL_PASS=...
+MAIL_FROM=rapport@example.com
+MAIL_SUBJECT=Din SEO-rapport
+```
+Bilagor: HTML och PDF från `output/`.
+
 ## Struktur
 - `src/audit/runAudit.js` – modulärt anrop som kör alla steg och bygger rapport.
 - `src/server.js` – enkel Express-API som wrappar `runAudit`.
