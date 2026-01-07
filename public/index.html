@@ -82,6 +82,9 @@
   </div>
 
   <script>
+    // Standard-worker (din Render-URL)
+    const workerBaseDefault = "https://rapport112.onrender.com";
+
     // Läs worker-API-bas från query (?worker=https://api.example.com) eller localStorage
     function getWorkerBase() {
       const params = new URLSearchParams(window.location.search);
@@ -91,7 +94,8 @@
         return qp.replace(/\/$/, "");
       }
       const stored = localStorage.getItem("workerApiBase");
-      return stored ? stored.replace(/\/$/, "") : "";
+      if (stored) return stored.replace(/\/$/, "");
+      return workerBaseDefault.replace(/\/$/, "");
     }
 
     const apiBase = getWorkerBase(); // tom sträng = samma origin
