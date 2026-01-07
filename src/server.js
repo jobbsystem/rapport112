@@ -5,6 +5,7 @@ import { runAudit } from "./audit/runAudit.js";
 
 const app = express();
 app.use(cors());
+app.use(express.static("public"));
 app.use(bodyParser.json({ limit: "1mb" }));
 
 app.post("/api/run-report", async (req, res) => {

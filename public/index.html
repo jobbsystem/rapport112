@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SEO-analys</title>
+  <style>
+    body {
+      font-family: "Inter", -apple-system, sans-serif;
+      background: #2f2f2f;
+      color: #fff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+    .card {
+      background: rgba(255, 255, 255, 0.05);
+      padding: 32px;
+      border-radius: 12px;
+      width: 340px;
+      box-shadow: 0 12px 40px rgba(0,0,0,0.35);
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+    h1 {
+      margin: 0 0 18px;
+      font-size: 26px;
+      font-weight: 700;
+    }
+    label {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 14px;
+      color: #ddd;
+    }
+    input {
+      width: 100%;
+      padding: 12px 14px;
+      margin-bottom: 12px;
+      border-radius: 8px;
+      border: 1px solid #444;
+      background: #fff;
+      color: #111;
+      font-size: 15px;
+      box-sizing: border-box;
+    }
+    button {
+      width: 100%;
+      padding: 12px 14px;
+      background: #23c16b;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    button:disabled { opacity: 0.6; cursor: not-allowed; }
+    .status { margin-top: 12px; font-size: 14px; color: #ddd; }
+    .success { color: #5ef08a; }
+    .error { color: #ff9b9b; }
+    .links { margin-top: 8px; font-size: 13px; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>SEO-analys av din hemsida</h1>
+    <form id="form">
+      <label for="url">Hemsida URL</label>
+      <input id="url" name="url" type="url" placeholder="https://example.com" required />
+      <label for="email">Email</label>
+      <input id="email" name="email" type="email" placeholder="namn@exempel.se" />
+      <label for="phone">Telefonnummer</label>
+      <input id="phone" name="phone" type="tel" placeholder="+46 ..." />
+      <button type="submit" id="btn">Starta analysen</button>
+    </form>
+    <div class="status" id="status"></div>
+    <div class="links" id="links"></div>
+  </div>
+
+  <script>
+    const form = document.getElementById("form");
+    const statusEl = document.getElementById("status");
+    const linksEl = document.getElementById("links");
+    const btn = document.getElementById("btn");
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      statusEl.textContent = "Kör analys, detta kan ta någon minut...";
+      statusEl.className = "status";
+      linksEl.innerHTML = "";
+      btn.disabled = true;
+
+      const payload = {
+        url: form.url.value.trim(),
+        email: form.email.value.trim(),
+        phone: form.phone.value.trim(),
+      };
+
+      try {
+        const res = await fetch("/api/run-report", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        });
+        if (!res.ok) throw new Error("API svarade inte OK");
+        const data = await res.json();
+        if (!data.ok) throw new Error(data.error || "Okänt fel");
+        statusEl.textContent = "Klar!";
+        statusEl.className = "status success";
+        linksEl.innerHTML = `
+          <div>HTML: ${data.htmlPath}</div>
+          <div>PDF: ${data.pdfPath}</div>
+          <div class="muted">Filerna finns på servern (output/). Publicera via storage/CDN om du vill dela publika länkar.</div>
+        `;
+      } catch (err) {
+        statusEl.textContent = "Fel: " + (err.message || err);
+        statusEl.className = "status error";
+      } finally {
+        btn.disabled = false;
+      }
+    });
+  </script>
+</body>
+</html>
