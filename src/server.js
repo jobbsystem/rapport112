@@ -1,6 +1,10 @@
+import dotenv from "dotenv";
+dotenv.config();
+
 import express from "express";
 import bodyParser from "body-parser";
 import cors from "cors";
+import path from "path";
 import { runAudit } from "./audit/runAudit.js";
 import nodemailer from "nodemailer";
 
@@ -8,6 +12,7 @@ const app = express();
 app.use(cors());
 app.use(express.static("public"));
 app.use(bodyParser.json({ limit: "1mb" }));
+app.use("/output", express.static(path.join(process.cwd(), "output")));
 
 const mailEnabled = !!process.env.MAIL_HOST;
 let transporter = null;
