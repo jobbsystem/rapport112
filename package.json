@@ -1,0 +1,24 @@
+{
+  "name": "seo_rapport",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node src/run.js",
+    "api": "node src/server.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "cheerio": "^1.1.2",
+    "lighthouse": "^13.0.1",
+    "node-fetch": "^3.3.2",
+    "express": "^4.19.2",
+    "cors": "^2.8.5",
+    "body-parser": "^1.20.2",
+    "playwright": "^1.57.0",
+    "wappalyzer": "^7.0.3"
+  }
+}
