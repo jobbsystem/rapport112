@@ -1,4 +1,7 @@
 {
+  "version": 2,
+  "buildCommand": "echo \"Static deploy\"",
+  "outputDirectory": "public",
   "builds": [
     { "src": "public/**", "use": "@vercel/static" }
   ],
