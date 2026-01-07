@@ -6,7 +6,8 @@ COPY package*.json ./
 RUN npm install --production
 
 COPY src ./src
-COPY output ./output
+# Create output directory for reports (not in git)
+RUN mkdir -p output
 
 # Expose API port
 EXPOSE 3000
