@@ -61,6 +61,7 @@
     .success { color: #5ef08a; }
     .error { color: #ff9b9b; }
     .links { margin-top: 8px; font-size: 13px; }
+    .api-info { font-size: 12px; color: #ccc; margin-top: 6px; }
   </style>
 </head>
 <body>
@@ -77,13 +78,29 @@
     </form>
     <div class="status" id="status"></div>
     <div class="links" id="links"></div>
+    <div class="api-info" id="api-info"></div>
   </div>
 
   <script>
+    // Läs worker-API-bas från query (?worker=https://api.example.com) eller localStorage
+    function getWorkerBase() {
+      const params = new URLSearchParams(window.location.search);
+      const qp = params.get("worker");
+      if (qp) {
+        localStorage.setItem("workerApiBase", qp);
+        return qp.replace(/\/$/, "");
+      }
+      const stored = localStorage.getItem("workerApiBase");
+      return stored ? stored.replace(/\/$/, "") : "";
+    }
+
+    const apiBase = getWorkerBase(); // tom sträng = samma origin
     const form = document.getElementById("form");
     const statusEl = document.getElementById("status");
     const linksEl = document.getElementById("links");
     const btn = document.getElementById("btn");
+    const apiInfo = document.getElementById("api-info");
+    apiInfo.textContent = "API: " + (apiBase || "samma origin (/api)");
 
     form.addEventListener("submit", async (e) => {
       e.preventDefault();
@@ -99,7 +116,7 @@
       };
 
       try {
-        const res = await fetch("/api/run-report", {
+        const res = await fetch((apiBase || "") + "/api/run-report", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(payload),

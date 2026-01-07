@@ -20,9 +20,10 @@ docker run --rm -p 3000:3000 -v "$PWD/output:/app/output" seo-rapport
 ```
 
 ## Vercel + worker-API
-- Deploya bara frontend (formulär) på Vercel.
-- Sätt `WORKER_API_URL` till din körande Docker/Server (VPS/Render/etc) som kör `npm run api`.
-- Frontend POST: `/api/run-report` med `{ url, email, phone }`. Worker svarar med paths/länkar; lagra HTML/PDF i t.ex. S3/B2 och returnera publika länkar om du vill dela.
+- Deploya bara frontend (formulär) på Vercel. `vercel.json` pekar på `public/` som output.
+- Worker (Docker/VPS) kör `npm run api`. Exponera t.ex. `https://din-worker.com`.
+- Öppna Vercel-sidan med query för worker: `https://din-vercel-url?worker=https://din-worker.com`. Den sparas i localStorage och används för POST.
+- Frontend POST: `https://din-worker.com/api/run-report` med `{ url, email, phone }`. Worker svarar med paths/länkar; lagra HTML/PDF i t.ex. S3/B2 om du vill dela publika länkar.
 
 ## API-schema
 POST `/api/run-report`
