@@ -5,143 +5,203 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>SEO-analys</title>
   <style>
+    :root {
+      --glass-bg: rgba(255, 255, 255, 0.12);
+      --glass-border: rgba(255, 255, 255, 0.2);
+      --shadow: 0 25px 60px rgba(0, 0, 0, 0.4);
+      --green: #23c16b;
+      --text: #f5f7fb;
+      --muted: #cbd5e1;
+    }
+
+    * { box-sizing: border-box; }
+
     body {
-      font-family: "Inter", -apple-system, sans-serif;
-      background: #2f2f2f;
-      color: #fff;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
+      font-family: "Inter", -apple-system, system-ui, Arial, sans-serif;
+      background: #060b13 url("back.png") center/cover no-repeat fixed;
+      color: var(--text);
+      min-height: 100vh;
       margin: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
     }
+
     .card {
-      background: rgba(255, 255, 255, 0.05);
-      padding: 32px;
-      border-radius: 12px;
-      width: 340px;
-      box-shadow: 0 12px 40px rgba(0,0,0,0.35);
-      border: 1px solid rgba(255,255,255,0.08);
+      width: min(420px, 100%);
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: 18px;
+      padding: 26px;
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(18px);
     }
+
     h1 {
-      margin: 0 0 18px;
-      font-size: 26px;
-      font-weight: 700;
+      margin: 0 0 14px;
+      font-size: 24px;
+      font-weight: 800;
+      color: #fff;
     }
+
     label {
       display: block;
-      margin-bottom: 6px;
+      margin: 12px 0 6px;
       font-size: 14px;
-      color: #ddd;
+      color: var(--muted);
     }
+
     input {
       width: 100%;
-      padding: 12px 14px;
-      margin-bottom: 12px;
-      border-radius: 8px;
-      border: 1px solid #444;
-      background: #fff;
-      color: #111;
+      padding: 12px;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,0.25);
+      background: rgba(255,255,255,0.1);
+      color: #fff;
       font-size: 15px;
       box-sizing: border-box;
+      outline: none;
+      transition: border 0.2s, box-shadow 0.2s;
     }
+
+    input:focus {
+      border-color: rgba(35,193,107,0.7);
+      box-shadow: 0 0 0 3px rgba(35,193,107,0.15);
+    }
+
     button {
       width: 100%;
-      padding: 12px 14px;
-      background: #23c16b;
-      color: #fff;
+      margin-top: 16px;
+      padding: 12px;
+      border-radius: 12px;
       border: none;
-      border-radius: 8px;
+      background: linear-gradient(135deg, #28d67a, #20b864);
+      color: #fff;
       font-size: 16px;
-      font-weight: 700;
+      font-weight: 800;
       cursor: pointer;
+      box-shadow: 0 10px 30px rgba(32, 184, 100, 0.35);
+      transition: transform 0.2s, box-shadow 0.2s;
     }
-    button:disabled { opacity: 0.6; cursor: not-allowed; }
-    .status { margin-top: 12px; font-size: 14px; color: #ddd; }
+
+    button:hover { transform: translateY(-1px); }
+    button:active { transform: translateY(0); }
+
+    button:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      box-shadow: none;
+    }
+
+    .status {
+      margin-top: 14px;
+      font-size: 14px;
+      color: var(--muted);
+    }
+
     .success { color: #5ef08a; }
     .error { color: #ff9b9b; }
-    .links { margin-top: 8px; font-size: 13px; }
-    .api-info { font-size: 12px; color: #ccc; margin-top: 6px; }
+
+    .links {
+      margin-top: 10px;
+      font-size: 13px;
+      word-break: break-all;
+    }
+
+    .note {
+      margin-top: 6px;
+      font-size: 12px;
+      color: #e2e8f0;
+    }
+
+    a {
+      color: #9ae6ff;
+      text-decoration: none;
+    }
+    a:hover { text-decoration: underline; }
+
+    @media (max-width: 480px) {
+      .card { padding: 20px; }
+      h1 { font-size: 21px; }
+    }
   </style>
 </head>
 <body>
+
   <div class="card">
-    <h1>SEO-analys av din hemsida</h1>
+    <h1>SEO-analys</h1>
+
     <form id="form">
       <label for="url">Hemsida URL</label>
-      <input id="url" name="url" type="url" placeholder="https://example.com" required />
-      <label for="email">Email</label>
-      <input id="email" name="email" type="email" placeholder="namn@exempel.se" />
-      <label for="phone">Telefonnummer</label>
-      <input id="phone" name="phone" type="tel" placeholder="+46 ..." />
-      <button type="submit" id="btn">Starta analysen</button>
+      <input id="url" type="url" required placeholder="https://example.com" />
+
+      <label for="email">Email (får rapporten)</label>
+      <input id="email" type="email" required placeholder="namn@domain.se" />
+
+      <button id="btn" type="submit">Starta analys</button>
     </form>
-    <div class="status" id="status"></div>
-    <div class="links" id="links"></div>
-    <div class="api-info" id="api-info"></div>
+
+    <div id="status" class="status"></div>
+    <div id="links" class="links"></div>
+    <div class="note">Om du inte ser mailet direkt, kolla även skräpkorgen/spam.</div>
   </div>
 
-  <script>
-    // Standard-worker (din Render-URL)
-    const workerBaseDefault = "https://api.jobbsystem.se";
+<script>
+const form = document.getElementById("form");
+const statusEl = document.getElementById("status");
+const linksEl = document.getElementById("links");
+const btn = document.getElementById("btn");
 
-    // Läs worker-API-bas från query (?worker=https://api.example.com) eller localStorage
-    function getWorkerBase() {
-      const params = new URLSearchParams(window.location.search);
-      const qp = params.get("worker");
-      if (qp) {
-        localStorage.setItem("workerApiBase", qp);
-        return qp.replace(/\/$/, "");
-      }
-      const stored = localStorage.getItem("workerApiBase");
-      if (stored) return stored.replace(/\/$/, "");
-      return workerBaseDefault.replace(/\/$/, "");
+// Samma origin → postar till https://api.jobbsystem.se/api/run-report
+const API_BASE = "";
+
+form.addEventListener("submit", async (e) => {
+  e.preventDefault();
+
+  statusEl.textContent = "Kör analys… detta kan ta upp till någon minut.";
+  statusEl.className = "status";
+  linksEl.innerHTML = "";
+  btn.disabled = true;
+
+  const payload = {
+    url: document.getElementById("url").value.trim(),
+    email: document.getElementById("email").value.trim(),
+  };
+
+  try {
+    const res = await fetch(API_BASE + "/api/run-report", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    });
+
+    const data = await res.json();
+    if (!res.ok || !data.ok) {
+      throw new Error(data.error || "Okänt fel");
     }
 
-    const apiBase = getWorkerBase(); // tom sträng = samma origin
-    const form = document.getElementById("form");
-    const statusEl = document.getElementById("status");
-    const linksEl = document.getElementById("links");
-    const btn = document.getElementById("btn");
-    const apiInfo = document.getElementById("api-info");
-    apiInfo.textContent = "API: " + (apiBase || "samma origin (/api)");
+    if (data.emailSent) {
+      statusEl.textContent = "✅ Klar! Rapporten har skickats till din email.";
+      statusEl.className = "status success";
+    } else {
+      statusEl.textContent = "⚠️ Rapport klar, men email kunde inte skickas.";
+      statusEl.className = "status error";
+    }
 
-    form.addEventListener("submit", async (e) => {
-      e.preventDefault();
-      statusEl.textContent = "Kör analys, detta kan ta någon minut...";
-      statusEl.className = "status";
-      linksEl.innerHTML = "";
-      btn.disabled = true;
+    linksEl.innerHTML = `
+      <div>PDF: <a href="${data.pdfUrl}" target="_blank" rel="noopener">${data.pdfUrl}</a></div>
+      <div>HTML: <a href="${data.htmlUrl}" target="_blank" rel="noopener">${data.htmlUrl}</a></div>
+    `;
 
-      const payload = {
-        url: form.url.value.trim(),
-        email: form.email.value.trim(),
-        phone: form.phone.value.trim(),
-      };
+  } catch (err) {
+    statusEl.textContent = "❌ Fel: " + (err.message || err);
+    statusEl.className = "status error";
+  } finally {
+    btn.disabled = false;
+  }
+});
+</script>
 
-      try {
-        const res = await fetch((apiBase || "") + "/api/run-report", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload),
-        });
-        if (!res.ok) throw new Error("API svarade inte OK");
-        const data = await res.json();
-        if (!data.ok) throw new Error(data.error || "Okänt fel");
-        statusEl.textContent = "Klar!";
-        statusEl.className = "status success";
-        linksEl.innerHTML = `
-          <div>HTML: ${data.htmlPath}</div>
-          <div>PDF: ${data.pdfPath}</div>
-          <div class="muted">Filerna finns på servern (output/). Publicera via storage/CDN om du vill dela publika länkar.</div>
-        `;
-      } catch (err) {
-        statusEl.textContent = "Fel: " + (err.message || err);
-        statusEl.className = "status error";
-      } finally {
-        btn.disabled = false;
-      }
-    });
-  </script>
 </body>
 </html>
